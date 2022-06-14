@@ -74,6 +74,7 @@ print("-------------------------------")
 
 sear = Search()
 while True:
+    music_urls = {}
     music = input("Музыка($exit - выход): ")
     if music.lower() == "$exit":
         break
