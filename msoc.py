@@ -3,7 +3,6 @@ import requests
 from threading import Thread
 import json
 from time import sleep
-import socket
 
 import app
 
@@ -20,7 +19,7 @@ class Search():
                     "story": music
                 })
 
-        doc = BeautifulSoup(response.text, "lxml")
+        doc = BeautifulSoup(response.text, "html.parser")
 
         for track in doc.find_all("div", {"class": "track-item"}):
             _t = Thread(target=self.add_widget_url, args=(track,))
@@ -32,7 +31,7 @@ class Search():
         _doc = requests.get(_u).text
 
         if _doc.startswith("<!DOCTYPE html>"): 
-            doc_music = BeautifulSoup(_doc, "lxml")
+            doc_music = BeautifulSoup(_doc, "html.parser")
             _u = doc_music.find("meta", {"http-equiv": "refresh"})["content"].split("?url=")[-1]
 
             _key = _u.split("?")[-1]
@@ -53,7 +52,7 @@ class Search():
     #         "url": url,
     #         "submit": "Создать"
     #     })
-    #     _html = BeautifulSoup(resp.text, "lxml")
+    #     _html = BeautifulSoup(resp.text, "html.parser")
     #     url_short = _html.find("div", {"id": "urlText"})
     #     if url_short:
     #         return url_short.text
@@ -75,7 +74,10 @@ print("-------------------------------")
 
 sear = Search()
 while True:
-    music = input("Музыка: ")
+    music = input("Музыка($exit - выход): ")
+    if music.lower() == "$exit":
+        break
+
     sear.search_music(music)
     while True:
         sleep(3)
