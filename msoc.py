@@ -30,20 +30,31 @@ def search_music(music):
 
 def add_widget_url(track):
     _u = track.find("a", {"class": "track-dl"})["onclick"].split("url=")[1].split("'")[0]
-    _doc = requests.get(_u).text
 
-    if _doc.startswith("<!DOCTYPE html>"): 
-        doc_music = BeautifulSoup(_doc, "html.parser")
-        _u = doc_music.find("meta", {"http-equiv": "refresh"})["content"].split("?url=")[-1]
+    try:
+        with requests.get(_u, stream=True, timeout=10) as data:
+            for content in data.iter_content(2048):
+                content = str(content)
+                if content.startswith("b'<!DOCTYPE html>") or content.startswith("b'<html>"):
+                    doc_music = BeautifulSoup(content, "html.parser")
+                    try:
+                        _u = doc_music.find("meta", {"http-equiv": "refresh"})["content"].split("?url=")[-1]
+                    except:
+                        break
 
-        _key = _u.split("?")[-1]
-    else:
-        _key = _u.split("&t=")[-1].replace("+", " ")
+                    _key = _u.split("?")[-1]
+                else:
+                    _key = _u.split("&t=")[-1].replace("+", " ")
 
-    _key = _key.replace(".mp3", "")
-        
-    music_urls[_key] = _u
-    print("\n" + _key + ": " + _u + "\n")
+                _key = _key.replace(".mp3", "")
+                    
+                music_urls[_key] = _u
+                print("\n" + _key + ": " + _u + "\n")
+
+                break
+    except Exception as ex:
+        pass
+    
     del threads[-1]
 
 
