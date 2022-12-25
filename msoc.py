@@ -84,12 +84,15 @@ while True:
     while True:
         sleep(3)
         if len(threads) == 0:
-            if input("Хотите прослушать?[Y/n]: ").lower() != "n":
-                is_localhost = input("Развернуть в локальной сети?[Y/n]: ")
-                print("Что бы закрыть прослушивание и продолжить парсить музыку, нажмите Ctrl+C")
-                if is_localhost.lower() != "n":
-                    listen_music("0.0.0.0")
-                else:
-                    listen_music()
-            
+            if music_urls != {}:
+                if input("Хотите прослушать?[Y/n]: ").lower() != "n":
+                    is_localhost = input("Развернуть в локальной сети?[Y/n]: ")
+                    print("Что бы закрыть прослушивание и продолжить парсить музыку, нажмите Ctrl+C")
+                    if is_localhost.lower() != "n":
+                        listen_music("0.0.0.0")
+                    else:
+                        listen_music()
+            else:
+                print(f"По запросу \"{music}\" ничего не найдено...")
+                
             break
