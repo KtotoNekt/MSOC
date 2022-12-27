@@ -29,6 +29,7 @@ def search_music(music):
 
 
 def add_widget_url(track):
+    name = get_name_track(track)
     _u = track.find("a", {"class": "track-dl"})["onclick"].split("url=")[1].split("'")[0]
 
     try:
@@ -41,21 +42,19 @@ def add_widget_url(track):
                         _u = doc_music.find("meta", {"http-equiv": "refresh"})["content"].split("?url=")[-1]
                     except:
                         break
-
-                    _key = _u.split("?")[-1]
-                else:
-                    _key = _u.split("&t=")[-1].replace("+", " ")
-
-                _key = _key.replace(".mp3", "")
                     
-                music_urls[_key] = _u
-                print("\n" + _key + ": " + _u + "\n")
+                music_urls[name] = _u
+                print("\n" + name + ": " + _u + "\n")
 
                 break
     except Exception as ex:
         pass
     
     del threads[-1]
+
+
+def get_name_track(track):
+    return track.find("div", {"class": "track-title"}).find("span").text
 
 
 def listen_music(host="127.0.0.1"):
