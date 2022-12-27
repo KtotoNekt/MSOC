@@ -54,7 +54,11 @@ def add_widget_url(track):
 
 
 def get_name_track(track):
-    return track.find("div", {"class": "track-title"}).find("span").text
+    track_title = track.find("div", {"class": "track-title"})
+    try:
+        return track_title.find("span").text
+    except:
+        return track_title.text
 
 
 def listen_music(host="127.0.0.1"):
