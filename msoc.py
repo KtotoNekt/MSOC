@@ -28,6 +28,14 @@ def search_music(music):
         _t.start()
 
 
+def get_name_track(track):
+    track_title = track.find("div", {"class": "track-title"})
+    try:
+        return track_title.find("span").text
+    except:
+        return track_title.text
+
+
 def add_widget_url(track):
     name = get_name_track(track)
     _u = track.find("a", {"class": "track-dl"})["onclick"].split("url=")[1].split("'")[0]
@@ -51,14 +59,6 @@ def add_widget_url(track):
         pass
     
     del threads[-1]
-
-
-def get_name_track(track):
-    track_title = track.find("div", {"class": "track-title"})
-    try:
-        return track_title.find("span").text
-    except:
-        return track_title.text
 
 
 def listen_music(host="127.0.0.1"):
