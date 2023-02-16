@@ -41,22 +41,16 @@ def add_widget_url(track):
     _u = track.find("a", {"class": "track-dl"})["onclick"].split("url=")[1].split("'")[0]
 
     try:
-        with requests.get(_u, stream=True, timeout=10) as data:
-            for content in data.iter_content(2048):
-                content = str(content)
-                if content.startswith("b'<!DOCTYPE html>") or content.startswith("b'<html>"):
-                    doc_music = BeautifulSoup(content, "html.parser")
-                    try:
-                        _u = doc_music.find("meta", {"http-equiv": "refresh"})["content"].split("?url=")[-1]
-                    except:
-                        break
-                    
-                music_urls[name] = _u
-                print("\n" + name + ": " + _u + "\n")
-
-                break
+        headers = requests.head(_u).headers
+        location_file = headers.get("location")
+        
+        if location_file:
+            _u = location_file
+            
+        music_urls[name] = _u
+        print("\n" + name + ": " + _u + "\n")
     except Exception as ex:
-        pass
+        print(ex)
     
     del threads[-1]
 
