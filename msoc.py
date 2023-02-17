@@ -50,15 +50,9 @@ def add_widget_url(track):
                         _u = doc_music.find("meta", {"http-equiv": "refresh"})["content"].split("?url=")[-1]
                     except:
                         break
-
-                    _key = _u.split("?")[-1]
-                else:
-                    _key = _u.split("&t=")[-1].replace("+", " ")
-
-                _key = _key.replace(".mp3", "")
                     
-                music_urls[_key] = _u
-                print("\n" + _key + ": " + _u + "\n")
+                music_urls[name] = _u
+                print("\n" + name + ": " + _u + "\n")
 
                 break
     except Exception as ex:
