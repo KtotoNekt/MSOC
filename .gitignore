@@ -1,0 +1,10 @@
+venv/
+*.mp3
+.idea/
+bin/
+.buildozer/
+buildozer.spec
+sound.wav
+db.sqlite3
+.env
+__pycache__
