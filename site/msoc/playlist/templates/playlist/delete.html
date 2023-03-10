@@ -1,0 +1,23 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Удаление плейлиста{% endblock %}
+
+{% block body %}
+<div class="container-fluid p-5 bg-primary text-white text-center">
+  <h1>Удаление плейлиста</h1>
+  <p>При удалении плейлиста вы теряете сохраненные песни</p>
+</div>
+
+<form method="post">
+  {% csrf_token %}
+
+  <h3>Вы желаете удалить плейлист "{{ playlist.name }}"?</h3>
+  {% if playlist.count_music != 0 %}
+    <p>Данный плейлист не пустой ({{ playlist.count_music }} треков)</p>
+  {% endif %}
+
+  <button type="submit" class="btn btn-danger btn-lg">Да</button>
+  <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-success btn-lg" role="button">Нет</a>
+</form>
+{% endblock %}

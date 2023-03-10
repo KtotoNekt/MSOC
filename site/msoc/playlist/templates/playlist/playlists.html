@@ -1,0 +1,50 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Плейлисты{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'playlist/css/playlist.css' %}">
+{% endblock %}
+
+{% block body %}
+
+<div class="container-fluid p-5 bg-primary text-white text-center">
+  <h1>Плейлисты</h1>
+  <p>Музыку можно сохранять в плейлисты!</p>
+</div>
+
+<div class="container">
+{% for playlist in playlists %}
+  <div class="container mt-4 mb-3">
+    <p class="title fs-3 mb-0"><a class="link-info" href="{% url 'view_playlist' playlist.id %}">{{ playlist.name }}</a></p>
+    <small class="text-muted">{{ playlist.description }}</small>
+  </div>
+
+  <ul class="list-group list-group-flush">
+    {% for music in playlist.list_music %}
+      <li class="list-group-item bg-dark text-white rounded-4">
+          <p>{{ music.name }}</p>
+          <div class="embed-responsive embed-responsive-16by9 embed-responsive-item d-flex justify-content-center">
+              <audio controls="true" style="height: 40px; width: 66%;" class="mx-4">
+                  <source src="{{ music.url }}" type="audio/mpeg">
+              </audio>
+              <button value="{% url 'del_to_playlist' playlist.id music.id %}" class="btn btn-danger p-2"><img width="30px" src="{% static 'playlist/img/delete.png' %}" alt="Удалить из плейлиста"></button>
+          </div>
+      </li>
+    {% empty %}
+      <li class="list-group-item bg-dark text-white rounded-4">
+          <p>Пустой плейлист</p>
+      </li>
+    {% endfor %}
+  </ul>
+{% endfor %}
+</div>
+
+<div class="div-create rounded-4 container bg-info">
+    <h5>Не хватает плейлистов? Так а в чем проблема!</h5>
+    <a class="btn btn-primary" href="{% url 'create_playlist' %}">Создать плейлист</a>
+</div>
+
+<script src="{% static 'playlist/js/index.js' %}"></script>
+{% endblock %}

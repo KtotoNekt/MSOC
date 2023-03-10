@@ -1,0 +1,62 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Последний поиск{% endblock %}
+
+{% block body %}
+<div class="container-fluid p-5 bg-primary text-white text-center" style="margin-bottom: 50px;">
+    <h1>Последнее, что искали:</h1>
+</div>
+
+<div id="div-search" class="container d-inline p-2 text-white">
+    <ul class="list-group list-group-flush container">
+    {% for music in musics %}
+        <li class="list-group-item bg-dark text-white rounded-4">
+            <p class="title">{{ music.name }}</p>
+            <div class="embed-responsive embed-responsive-16by9 embed-responsive-item d-flex justify-content-center">
+                <audio controls="true" style="height: 40px; width: 66%;" class="mx-4">
+                    <source src="{{ music.url }}" type="audio/mpeg">
+                </audio>
+                {% if playlists %}
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Добавить в</button>
+                    <ul class="dropdown-menu dropdown-menu-dark">
+                    {% for playlist in playlists %}
+                        <li><button name="{{ music.name }}" class="dropdown-item" value="{% url 'add_to_playlist' playlist.id music.id %}">{{ playlist.name }}</button></li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        </li>
+    {% endfor %}
+    </ul>
+</div>
+{% if user.is_authenticated %}
+    {% if user.is_staff %}
+        <div class="container text-center bg-danger rounded-5 text-white p-5">
+            <h3>Внимание!</h3>
+            <p>Если из приведенных выше файлов есть то, что не является треком или он является не полным, то вы (как модер) дожны удалить файл из базы данных</p>
+            <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Удалить файл: </button>
+            <ul class="dropdown-menu dropdown-menu-dark">
+                {% for music in musics %}
+                    <li><a class="dropdown-item" href="{% url 'delete_music' music.id %}">{{ music.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% else %}
+        <div class="container text-center bg-danger rounded-5 text-white p-5">
+            <h3>Внимание!</h3>
+            <p>Если из приведенных выше файлов есть то, что не является треком или он является не полным, то отправьте заявку на удаление файла из базы данных</p>
+            <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Отправить заявку на файл: </button>
+            <ul class="dropdown-menu dropdown-menu-dark">
+                {% for music in musics %}
+                    <li><a class="dropdown-item" href="{% url 'create_complaint' music.id %}">{{ music.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+{% endif %}
+
+<script src="{% static 'main/js/update-url.js' %}"></script>
+<script src="{% static 'main/js/form-get.js' %}"></script>
+<script src="{% static 'main/js/index-buttons.js' %}"></script>
+{% endblock %}

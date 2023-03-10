@@ -1,0 +1,83 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Случайная музыка{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'main/css/random.css' %}">
+{% endblock %}
+
+{% block body %}
+<div class="container-fluid p-5 bg-primary text-white text-center" style="margin-bottom: 50px;">
+    <h1>Случайная музыка</h1>
+    <p>Слушайте то, что другие искали!</p>
+</div>
+
+<p class="title fs-3 mb-3">{{ music.name }}</p>
+<div class="embed-responsive embed-responsive-16by9 embed-responsive-item bg-dark text-white rounded-4 container music justify-content-center">
+    <audio controls="true" autoplay="true" style="height: 40px; width: 66%;">
+        <source src="{{ music.url }}" type="audio/mpeg">
+    </audio>
+</div>
+
+
+<div class="container text-center bg-info rounded-5 text-white p-5">
+    <p>Вы можете удалить песню или добавить ее в плейлист: </p>
+    {% if user.is_authenticated %}
+        {% if playlists %}
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Добавить в</button>
+                <ul class="dropdown-menu dropdown-menu-dark" id="div-add-playlist">
+                    {% for playlist in playlists %}
+                        <li><button class="dropdown-item" value="{% url 'add_to_playlist' playlist.id music.id %}">{{ playlist.name }}</button></li>
+                    {% endfor %}
+                </ul>
+
+                {% if music_playlists %}
+                    <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Удалить из</button>
+                    <ul class="dropdown-menu dropdown-menu-dark" id="div-del-playlist">
+                        {% for playlist in music_playlists %}
+                            <li><button class="dropdown-item" value="{% url 'del_to_playlist' playlist.id music.id %}">{{ playlist.name }}</button></li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <script src="{% static 'main/js/playlist-add-del.js' %}"></script>
+            </div>
+        {% else %}
+            <p class="fs-3">У вас нет плейлистов</p>
+        {% endif %}
+    {% else %}
+        <p class="fs-3">Что бы иметь такую возможность, нужно войти в учетную запись!</p>
+    {% endif %}
+</div>
+
+{% if user.is_authenticated %}
+    {% if user.is_staff %}
+        <div class="container text-center bg-danger rounded-5 text-white p-5">
+            <h3>Внимание!</h3>
+            <p>Если приведенный выше файл не является треком или он является не полным, то вы (как модер) дожны удалить файл из базы данных</p>
+            <a class="btn btn-warning" href="{% url 'delete_music' music.id %}">Удалить файл</a>
+        </div>
+    {% else %}
+        <div class="container text-center bg-danger rounded-5 text-white p-5">
+            <h3>Внимание!</h3>
+            <p>Если приведенный выше файл не является треком или он является не полным, то отправьте заявку на удаление файла из базы данных</p>
+            <a class="btn btn-warning" href="{% url 'create_complaint' music.id %}">Отправить заявку на файл</a>
+        </div>
+    {% endif %}
+{% endif %}
+
+<script src="{% static 'main/js/form-get.js' %}"></script>
+<script src="{% static 'main/js/update-url.js' %}"></script>
+<script>
+
+</script>
+<script>
+    const audio = document.querySelector("audio")
+
+    audio.addEventListener("ended", () => {
+        console.log("End")
+        location.reload()
+    })
+</script>
+{% endblock %}

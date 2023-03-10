@@ -1,0 +1,20 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Обновление плейлиста{% endblock %}
+
+{% block body %}
+<div class="container-fluid p-5 bg-primary text-white text-center">
+  <h1>Обновление плейлиста</h1>
+  <p>Допустили ошибку в написании плейлиста? Проблем нет!</p>
+</div>
+
+<form method="post">
+    <h3>Форма для обновление плейлиста</h3>
+    {% csrf_token %}
+    {{ form.name }}
+    {{ form.description }}
+
+    <button type="submit" class="btn btn-success">Обновить плейлист</button>
+</form>
+{% endblock %}

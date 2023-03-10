@@ -1,0 +1,22 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Создание жалобы{% endblock %}
+
+{% block body %}
+<div class="container-fluid p-5 bg-primary text-white text-center">
+  <h1>0-0</h1>
+  <p>Если вы обнаружили что то странное, отправьте заявку на проверку файла</p>
+</div>
+
+<form method="post">
+    <h3>Заявка на удаление файла: "{{ music.name }} ({{ music.id }})"</h3>
+    {% csrf_token %}
+    {{ form.music }}
+    {{ form.reason }}
+    {{ form.description }}
+
+    <button type="submit" class="btn btn-success">Подать заявку</button>
+</form>
+
+{% endblock %}

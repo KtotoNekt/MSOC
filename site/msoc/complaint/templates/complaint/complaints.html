@@ -1,0 +1,35 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Заявки на удаление{% endblock %}
+
+{% block body %}
+<div class="container-fluid p-5 bg-primary text-white text-center">
+  <h1>Заявки на удаление</h1>
+  <p></p>
+</div>
+
+<div class="container d-inline p-2 text-white">
+      <ul class="list-group list-group-flush container">
+      {% for complaint in complaints %}
+          <li class="list-group-item bg-dark text-white rounded-4 mb-5">
+              <h3 class="title">{{ complaint.music.name }}</h3>
+              <p>Отправил: <b>{{ complaint.user }}</b></p>
+              <p>По причине: <b>{{ complaint.reason }}</b></p>
+              <small class="text-muted">{{ complaint.description }}</small>
+              <div class="embed-responsive embed-responsive-16by9 embed-responsive-item d-flex justify-content-center">
+                  <audio controls="true" style="height: 40px; width: 66%;" class="mx-4">
+                      <source src="{{ complaint.music.url }}" type="audio/mpeg">
+                  </audio>
+              </div>
+              <div class="btn-group mt-3" url-delete-complaint="{% url 'delete_complaint' complaint.id %}">
+                  <button value="{% url 'delete_music' complaint.music.id %}" class="accept btn btn-success">Принять заявку</button>
+                  <button class="decline btn btn-danger">Отклонить заявку</button>
+              </div>
+          </li>
+      {% endfor %}
+    </ul>
+</div>
+
+<script src="{% static 'complaint/js/complaint.js' %}"></script>
+{% endblock %}

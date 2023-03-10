@@ -1,0 +1,9 @@
+.music {
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+.music > button {
+    margin-top: -31px;
+    margin-right: 10px;
+}

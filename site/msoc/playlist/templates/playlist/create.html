@@ -1,0 +1,21 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Создание плейлиста{% endblock %}
+
+{% block body %}
+<div class="container-fluid p-5 bg-primary text-white text-center">
+  <h1>Создайте свой плейлист!</h1>
+  <p>Тут вы можете создать свой плейлист</p>
+</div>
+
+<form method="post">
+    <h3>Форма для создание плейлиста</h3>
+    {% csrf_token %}
+    {{ form.name }}
+    {{ form.description }}
+
+    <button type="submit" class="btn btn-success">Создать плейлист</button>
+</form>
+
+{% endblock %}
