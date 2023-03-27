@@ -1,6 +1,9 @@
 from django.urls import path, include
 from django.views.generic import TemplateView
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 from .views import *
 
 
@@ -17,4 +20,4 @@ urlpatterns = [
         EmailVerify.as_view(),
         name='verify_email',
     ),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

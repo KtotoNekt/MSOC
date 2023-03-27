@@ -1,0 +1,25 @@
+body {
+    background-color: #181A1B;
+}
+
+div.bg-info {
+    width: 50%
+}
+div.bg-danger {
+    width: 50%
+}
+
+form {
+    align-self: center;
+    width: 70%;
+    margin-top: 30px;
+    margin-left: 15%;
+}
+
+form > * {
+    margin-bottom: 10px;
+}
+
+.error {
+    color: red
+}
