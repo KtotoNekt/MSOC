@@ -5,7 +5,7 @@ from random import choice
 
 from playlist.models import PlayList
 
-from .msoc import MSOC, check_url
+from .msoc import MSOC
 from .models import Music
 
 
@@ -30,25 +30,6 @@ def index(req):
         return render(req, 'main/index.html', data)
 
     return render(req, 'main/index.html')
-
-
-def update_url_music(music: Music):
-    new_url = check_url(music.url)
-    if music.url != new_url:
-        try:
-            m = Music.objects.get(url=new_url)
-            music.delete()
-            print("Удалена:", music.id, music.name, music.url)
-
-            print(m.name, m.url)
-            return m
-        except:
-            print("Старая:", music.id, music.name, music.url)
-            music.url = new_url
-            print("Обновлена: ", music.id, music.name, music.url)
-            music.save()
-
-    return music
 
 
 def last_search_music(req):
@@ -76,7 +57,7 @@ def random_music(req):
     if not musics:
         return HttpResponse("<h1>Никто еще ничего не слушал</h1>")
 
-    music = update_url_music(choice(musics))
+    music = choice(musics)
 
     if req.user.is_authenticated:
         playlists = PlayList.objects.filter(user=req.user)

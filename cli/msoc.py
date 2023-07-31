@@ -8,7 +8,7 @@ import sys
 import app
 
 
-url = "https://mp3-uk.net/"
+url = "https://mp3uk.net/"
 music_urls = {}
 threads = []
 
@@ -38,25 +38,15 @@ def get_name_track(track):
 
 def add_widget_url(track):
     name = get_name_track(track)
-    _u = track.find("a", {"class": "track-dl"})["onclick"].split("url=")[1].split("'")[0]
-
-    try:
-        with requests.get(_u, stream=True, timeout=10) as data:
-            for content in data.iter_content(2048):
-                content = str(content)
-                if content.startswith("b'<!DOCTYPE html>") or content.startswith("b'<html>"):
-                    doc_music = BeautifulSoup(content, "html.parser")
-                    try:
-                        _u = doc_music.find("meta", {"http-equiv": "refresh"})["content"].split("?url=")[-1]
-                    except:
-                        break
+    unclean_url = track.find("a", {"class": "track-dl"})["href"]
+    
+    if "/dl.php?" in unclean_url:
+        _u = "https://mp3uk.net" + unclean_url
+    else:
+        _u = "https:" + unclean_url
                     
-                music_urls[name] = _u
-                print("\n" + name + ": " + _u + "\n")
-
-                break
-    except Exception as ex:
-        print(ex)
+    music_urls[name] = _u
+    print("\n" + name + ": " + _u + "\n")
     
     del threads[-1]
 

@@ -170,7 +170,7 @@ class MSOGApp(App):
             self.search_btn.text = "Идет поиск"
             music = self.text_input.text
 
-            response = requests.post("https://mp3-uk.net/", {
+            response = requests.post("https://mp3uk.net/", {
                 "do": "search",
                 "subaction": "search",
                 "story": music
@@ -203,23 +203,14 @@ class MSOGApp(App):
 
     def add_widget_url(self, track):
         name = self.get_name_track(track)
-        _u = track.find("a", {"class": "track-dl"})["onclick"].split("url=")[1].split("'")[0]
+        unclean_url = track.find("a", {"class": "track-dl"})["href"]
+    
+        if "/dl.php?" in unclean_url:
+            _u = "https://mp3uk.net" + unclean_url
+        else:
+            _u = "https:" + unclean_url
 
-        try:
-            with requests.get(_u, stream=True, timeout=10) as data:
-                for content in data.iter_content(2048):
-                    content = str(content)
-                    if content.startswith("b'<!DOCTYPE html>") or content.startswith("b'<html>"):
-                        doc_music = BeautifulSoup(content, "html.parser")
-                        try:
-                            _u = doc_music.find("meta", {"http-equiv": "refresh"})["content"].split("?url=")[-1]
-                        except:
-                            break
-
-                    self.music_urls[name] = _u
-                    break
-        except:
-            pass
+        self.music_urls[name] = _u
 
         del self.threads[-1]
 

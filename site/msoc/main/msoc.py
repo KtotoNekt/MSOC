@@ -11,26 +11,9 @@ def get_name_track(track):
         return track_title.text
 
 
-def check_url(url):
-    new_url = url
-    with requests.get(url, stream=True, timeout=10) as data:
-        for content in data.iter_content(2048):
-            content = str(content)
-            if content.startswith("b'<!DOCTYPE html>") or content.startswith("b'<html>"):
-                doc_music = BeautifulSoup(content, "html.parser")
-                try:
-                    new_url = doc_music.find("meta", {"http-equiv": "refresh"})["content"].split("?url=")[-1]
-                except:
-                    break
-
-            return new_url
-
-    return new_url
-
-
 class MSOC:
     def __init__(self):
-        self.url = "https://mp3-uk.net/"
+        self.url = "https://mp3uk.net/"
         self.musics = []
 
     def search_music(self, music):
@@ -49,11 +32,14 @@ class MSOC:
 
     def add_widget_url(self, track):
         name = get_name_track(track)
-        _u = track.find("a", {"class": "track-dl"})["onclick"].split("url=")[1].split("'")[0]
+        unclean_url = track.find("a", {"class": "track-dl"})["href"]
+        
+        if "/dl.php?" in unclean_url:
+            _u = "https://mp3uk.net" + unclean_url
+        else:
+            _u = "https:" + unclean_url
 
         try:
-            _u = check_url(_u)
-
             if not Music.objects.filter(name=name, url=_u):
                 m = Music.objects.create(name=name, url=_u)
             else:
