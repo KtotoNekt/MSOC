@@ -8,7 +8,7 @@ import sys
 import app
 
 
-url = "https://mp3uk.net/"
+url = "https://mp3uks.ru/"
 music_urls = {}
 threads = []
 

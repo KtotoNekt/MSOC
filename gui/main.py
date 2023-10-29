@@ -170,7 +170,7 @@ class MSOGApp(App):
             self.search_btn.text = "Идет поиск"
             music = self.text_input.text
 
-            response = requests.post("https://mp3uk.net/", {
+            response = requests.post("https://mp3uks.ru/", {
                 "do": "search",
                 "subaction": "search",
                 "story": music

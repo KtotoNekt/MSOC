@@ -13,7 +13,7 @@ def get_name_track(track):
 
 class MSOC:
     def __init__(self):
-        self.url = "https://mp3uk.net/"
+        self.url = "https://mp3uks.ru/"
         self.musics = []
 
     def search_music(self, music):

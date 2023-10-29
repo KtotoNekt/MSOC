@@ -1,3 +1,4 @@
 bs4==0.0.1
 requests==2.27.1
 Flask==2.1.1
+Werkzeug==2.2.2
