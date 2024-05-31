@@ -55,8 +55,8 @@ async def search(query):
     for engine in ENGINES.values():
         tasks.append(engine.search(query))
 
-    for sounds in asyncio.as_completed(tasks):
-        sounds = await sounds
+    for sound_future in asyncio.as_completed(tasks):
+        sounds = await sound_future
         for sound in sounds:
             yield Sound(sound[0], sound[1])
 
