@@ -1,5 +1,6 @@
 import asyncio
 from importlib import util
+from os.path import dirname, join
 
 from .exceptions import *
 from .sound import Sound
@@ -16,7 +17,7 @@ __all__ = [
 
 ENGINES = dict()
 DEFAULT_ENGINES_MAP = {
-    "mp3uk": "msoc/engines/mp3uk.py"
+    "mp3uk": join(dirname(__file__), "engines", "mp3uk.py")
 }
 
 
