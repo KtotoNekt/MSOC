@@ -15,9 +15,14 @@ __all__ = [
 ]
 
 
+def __get_path_default_search_engine(engine_file: str):
+    return join(dirname(__file__), "engines", engine_file)
+
+
 ENGINES = dict()
 DEFAULT_ENGINES_MAP = {
-    "mp3uk": join(dirname(__file__), "engines", "mp3uk.py")
+    "mp3uk": __get_path_default_search_engine("mp3uk.py"),
+    "zaycev_net": __get_path_default_search_engine("zaycev_net.py")
 }
 
 

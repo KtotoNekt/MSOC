@@ -24,10 +24,15 @@ pip install .
 
 ```python
 from msoc import search
+import asyncio
+
 
 async def main():
-    async for sound in search("my_query"):
+    query = input("Запрос: ")
+    
+    async for sound in search(query):
         print(f"Name: {sound.name}, URL: {sound.url}")
+
 
 asyncio.run(main())
 ```
@@ -39,6 +44,7 @@ asyncio.run(main())
 В настоящее время библиотека MSOC поддерживает следующие движки поиска:
 
 - mp3uk: Поиск на сайте [mp3uks.ru](https://mp3uks.ru)
+- zaycev_net: Поиск на сайте [zaycev.net](https://zaycev.net)
 
 Вы можете добавлять новые движки поиска, создавая модули и загружая их с помощью функций `load_search_engine()` и `unload_search_engine()`.
 

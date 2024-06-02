@@ -42,17 +42,20 @@ def get_url(track):
 
 
 async def search(query):
-    print("Mp3uk engine")
     data = f"do=search&subaction=search&search_start=0&full_search=0&result_from=1&story={query}"
     async with aiohttp.ClientSession(headers=HEADERS) as session:
         async with session.post(URL, data=data) as response:
-            print(response.status)
             text = await response.text()
 
     html = BeautifulSoup(text, "html.parser")
 
     results = []
     for track in html.find_all("div", {"class": "track-item"}):
-        results.append((get_name(track), get_url(track))) 
+        name = get_name(track)
+        url = get_url(track)
+
+        sound = (name, url)
+
+        results.append(sound) 
 
     return results
