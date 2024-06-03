@@ -1,6 +1,7 @@
 import aiohttp
-
 from bs4 import BeautifulSoup
+
+from msoc.sound import Sound
 
 
 URL = "https://mp3uks.ru/index.php?do=search"
@@ -42,6 +43,7 @@ def get_url(track):
 
 
 async def search(query):
+    print("Mp3UK")
     data = f"do=search&subaction=search&search_start=0&full_search=0&result_from=1&story={query}"
     async with aiohttp.ClientSession(headers=HEADERS) as session:
         async with session.post(URL, data=data) as response:
@@ -49,13 +51,10 @@ async def search(query):
 
     html = BeautifulSoup(text, "html.parser")
 
-    results = []
     for track in html.find_all("div", {"class": "track-item"}):
         name = get_name(track)
         url = get_url(track)
 
         sound = (name, url)
 
-        results.append(sound) 
-
-    return results
+        yield sound

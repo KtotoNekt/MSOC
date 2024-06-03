@@ -1,4 +1,4 @@
-from typing import AsyncGenerator
+from typing import AsyncGenerator, Any
 from aiohttp import ClientSession
 import bs4
 from os.path import basename
@@ -48,6 +48,8 @@ def get_name(li: bs4.Tag) -> str:
 
 
 async def search(query: str):
+    print("Zaycev net")
+
     async with ClientSession() as session:
         async with session.get(SEARCH_URL + query) as response:
             html_text = await response.text()
@@ -62,17 +64,14 @@ async def search(query: str):
 
             track_names[track_id] = name
 
-        results = []
         async for track_id, download_hash in get_tracks_download_hashes(session, track_names.keys()):
             name = track_names[str(track_id)]
             url = await get_url(session, download_hash)
 
             sound = (name, url)
 
-            results.append(sound)
-        
-    return results    
-
+            yield sound
+    
 
 if __name__ == "__main__":
     import asyncio

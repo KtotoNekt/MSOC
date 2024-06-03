@@ -1,11 +1,11 @@
-from msoc import search
+from msoc import search, engines
 import asyncio
 
 
 async def main():
-    query = input("Запрос: ")
+    # query = input("Запрос: ")
     
-    async for sound in search(query):
+    async for sound in search(1):
         print(f"Name: {sound.name}, URL: {sound.url}")
 
 

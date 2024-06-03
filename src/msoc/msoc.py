@@ -1,6 +1,8 @@
 import asyncio
 from importlib import util
 from os.path import dirname, join
+from types import ModuleType
+from typing import AsyncGenerator, Any
 
 from .exceptions import *
 from .sound import Sound
@@ -26,11 +28,19 @@ DEFAULT_ENGINES_MAP = {
 }
 
 
-def engines():
+def engines() -> dict[str, ModuleType]:
+    """
+    Функция возвращает словарь загруженных поисковых движков.
+    """
     return ENGINES.copy()
 
 
-def load_search_engine(name, path_python_file: str):
+def load_search_engine(name: str, path_python_file: str) -> None:
+    """
+    Функция загружает поисковой движок по путю к python файлу.
+
+    Exceptions: EnginePathNotFoundError
+    """
     spec = util.spec_from_file_location(name, path_python_file)
 
     module = util.module_from_spec(spec)
@@ -43,7 +53,12 @@ def load_search_engine(name, path_python_file: str):
     ENGINES[name] = module
 
 
-def unload_search_engine(name):
+def unload_search_engine(name: str) -> None:
+    """
+    Функция удаляет поисковой движок из загруженных по name
+
+    Exceptions: LoadedEngineNotFoundError
+    """
     try:
         del ENGINES[name]
     except KeyError:
@@ -55,16 +70,43 @@ def __load_default_engines():
         load_search_engine(name, python_file_path)
 
 
-async def search(query):
-    tasks = []
+async def consume(a_iter):
+    try:
+        return await a_iter.__anext__(),  asyncio.create_task(consume(a_iter))
+    except StopAsyncIteration:
+        return None, None
 
-    for engine in ENGINES.values():
-        tasks.append(engine.search(query))
 
-    for sound_future in asyncio.as_completed(tasks):
-        sounds = await sound_future
-        for sound in sounds:
+def create_generator_task(gen: AsyncGenerator) -> AsyncGenerator:
+    result_queue = asyncio.create_task(consume(gen.__aiter__()))
+    async def consumer():
+        nonlocal result_queue
+        while 1:
+            item, result_queue = await result_queue
+            if result_queue is None:
+                assert item is None
+                return
+            yield item
+    return consumer()
+
+
+
+async def search(query: str):
+    """
+    Функция начинает поиск песен по запросу query.
+
+    Возвращает: асинхронный генератор Sound
+    """
+
+    tasks = [
+        create_generator_task(engine.search(query)) 
+        for engine in ENGINES.values()
+        ]
+
+    for task in tasks:
+        async for sound in task:
+            print(sound)
             yield Sound(sound[0], sound[1])
-
+    
 
 __load_default_engines()

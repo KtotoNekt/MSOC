@@ -18,7 +18,7 @@ cd MSOC
 pip install .
 ```
 
-## Использование
+# Использование
 
 Импортируйте модуль msoc и используйте функцию search() для поиска музыки:
 
@@ -54,6 +54,55 @@ asyncio.run(main())
 
 - `LoadedEngineNotFoundError`: Выбрасывается, когда движок поиска не был найден в загруженных движках.
 - `EnginePathNotFoundError`: Выбрасывается, когда не удается импортировать движок поиска по указанному пути.
+
+## Создание своих поисковых движков
+Для создания собственных поисковых движков на Python вы можете использовать следующий подход:
+
+1. Создайте новый Python-файл для вашего поискового движка:
+   - Например, создайте файл my_search_engine.py.
+
+2. Определите асинхронную функцию search(query), которая будет реализовывать поисковый алгоритм:
+   - Функция search(query) должна возвращать список кортежей (name, url), где name - название найденного аудиофайла, а url - ссылка на его загрузку.
+   - Реализуйте логику поиска, взаимодействуя с API или веб-страницами источников, которые вы хотите использовать.
+   - Можете использовать библиотеки, такие как aiohttp, beautifulsoup4 и другие, для выполнения HTTP-запросов и парсинга HTML-страниц.
+
+Функция `search` внутри движка должна возвращать список 
+Пример реализации функции search(query) в my_search_engine.py:
+
+```python
+import aiohttp
+from bs4 import BeautifulSoup
+
+
+async def search(query: str) -> list[tuple[str, str]]:
+    async with aiohttp.ClientSession() as session:
+        async with session.get(f"https://example.com/search?q={query}") as response:
+            html = await response.text()
+
+    soup = BeautifulSoup(html, "html.parser")
+
+    results = []
+    for item in soup.find_all("div", class_="search-result"):
+        name = item.find("h3").text.strip()
+        url = item.find("a")["href"]
+        results.append((name, url))
+
+    return results
+```
+
+3. Подключите ваш поисковый движок к системе:
+   - В основном коде используйте функцию load_search_engine() для загрузки вашего движка:
+
+```python
+from msoc import load_search_engine, engines
+
+load_search_engine("my_search_engine", "path/to/my_search_engine.py")
+print(engines())
+```
+   - Замените "path/to/my_search_engine.py" на фактический путь к вашему файлу my_search_engine.py.
+   - Далее вызываем `engines()`, чтобы удостовериться, что движок был успешно загружен
+
+4. Теперь при запуске основной `search` функции, ваш движок будет автоматически загружен и использован для поиска песен
 
 ## Contribution
 
