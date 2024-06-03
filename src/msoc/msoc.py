@@ -105,8 +105,7 @@ async def search(query: str):
 
     for task in tasks:
         async for sound in task:
-            print(sound)
-            yield Sound(sound[0], sound[1])
+            yield sound
     
 
 __load_default_engines()

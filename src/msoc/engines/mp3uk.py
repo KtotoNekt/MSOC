@@ -55,6 +55,4 @@ async def search(query):
         name = get_name(track)
         url = get_url(track)
 
-        sound = (name, url)
-
-        yield sound
+        yield Sound(name, url)

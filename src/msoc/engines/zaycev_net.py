@@ -3,6 +3,8 @@ from aiohttp import ClientSession
 import bs4
 from os.path import basename
 
+from msoc.sound import Sound
+
 
 URL = "https://zaycev.net"
 API_URL = URL + "/api/external/track"
@@ -68,12 +70,4 @@ async def search(query: str):
             name = track_names[str(track_id)]
             url = await get_url(session, download_hash)
 
-            sound = (name, url)
-
-            yield sound
-    
-
-if __name__ == "__main__":
-    import asyncio
-
-    asyncio.run(search("Егор крид"))
+            yield Sound(name, url)
