@@ -50,7 +50,7 @@ def unload_search_engine(name):
         raise LoadedEngineNotFoundError(name)
 
 
-def load_default_engines():
+def __load_default_engines():
     for name, python_file_path in DEFAULT_ENGINES_MAP.items():
         load_search_engine(name, python_file_path)
 
@@ -67,4 +67,4 @@ async def search(query):
             yield Sound(sound[0], sound[1])
 
 
-load_default_engines()
+__load_default_engines()
