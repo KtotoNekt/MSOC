@@ -43,7 +43,6 @@ def get_url(track):
 
 
 async def search(query):
-    print("Mp3UK")
     data = f"do=search&subaction=search&search_start=0&full_search=0&result_from=1&story={query}"
     async with aiohttp.ClientSession(headers=HEADERS) as session:
         async with session.post(URL, data=data) as response:

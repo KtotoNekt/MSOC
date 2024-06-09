@@ -1,10 +1,10 @@
-from importlib import util
-from os.path import dirname, join
 from types import ModuleType
 
 from .functions import create_generator_task
-from .exceptions import *
 from .sound import Sound
+from .engines import mp3uk, zaycev_net
+
+from .exceptions import LoadedEngineNotFoundError
 
 
 __all__ = [
@@ -16,14 +16,9 @@ __all__ = [
 ]
 
 
-def __get_path_default_search_engine(engine_file: str):
-    return join(dirname(__file__), "engines", engine_file)
-
-
-ENGINES = dict()
-DEFAULT_ENGINES_MAP = {
-    "mp3uk": __get_path_default_search_engine("mp3uk.py"),
-    "zaycev_net": __get_path_default_search_engine("zaycev_net.py")
+ENGINES = {
+    "mp3uk": mp3uk,
+    "zaycev_net": zaycev_net
 }
 
 
@@ -34,22 +29,12 @@ def engines() -> dict[str, ModuleType]:
     return ENGINES.copy()
 
 
-def load_search_engine(name: str, path_python_file: str) -> None:
+def load_search_engine(name: str, engine: ModuleType) -> None:
     """
     Функция загружает поисковой движок по путю к python файлу.
-
-    Exceptions: EnginePathNotFoundError
     """
-    spec = util.spec_from_file_location(name, path_python_file)
 
-    module = util.module_from_spec(spec)
-
-    try:
-        spec.loader.exec_module(module)
-    except:
-        raise EnginePathNotFoundError(path_python_file)
-
-    ENGINES[name] = module
+    ENGINES[name] = engine
 
 
 def unload_search_engine(name: str) -> None:
@@ -80,8 +65,3 @@ async def search(query: str):
         async for sound in task:
             yield sound
     
-
-
-# Загружаем модули по умолчанию
-for name, python_file_path in DEFAULT_ENGINES_MAP.items():
-    load_search_engine(name, python_file_path)

@@ -50,8 +50,6 @@ def get_name(li: bs4.Tag) -> str:
 
 
 async def search(query: str):
-    print("Zaycev net")
-
     async with ClientSession() as session:
         async with session.get(SEARCH_URL + query) as response:
             html_text = await response.text()
