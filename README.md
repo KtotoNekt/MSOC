@@ -93,15 +93,34 @@ async def search(query: str):
 ```python
 from msoc import load_search_engine, engines
 
-load_search_engine("my_search_engine", "path/to/my_search_engine.py")
+import my_search_engine
+
+
+load_search_engine("my_search_engine", my_search_engine)
 print(engines())
 ```
-   - Замените `path/to/my_search_engine.py` на фактический путь к вашему файлу `my_search_engine.py`.
+   - Замените `my_search_engine` на название вашего python файла.
    - Далее вызываем `engines()`, чтобы удостовериться, что движок был успешно загружен
 
 4. Теперь при запуске основной `search` функции, ваш движок будет автоматически загружен и использован для поиска песен
 
-### P.S 
+### P.S 1
+Если вам нужно подключить поисковой движок, файл которого находится не в текущей папке проекта, можете воспользоваться встроенным python пакетом `importlib`
+
+```python
+from msoc import load_search_engine
+from importlib import util
+
+spec = util.spec_from_file_location("my_search_engine", "/path/to/python/file/my_search_engine.py")
+module = util.module_from_spec(spec)
+
+spec.loader.exec_module(module)
+
+
+load_search_engine("my_search_engine", my_search_engine)
+```
+
+### P.S 2
 Если вам не нужен какой либо поисковой движок, используй `unload_search_engine` для его удаления из загруженных:
 
 ```python
