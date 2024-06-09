@@ -117,7 +117,7 @@ module = util.module_from_spec(spec)
 spec.loader.exec_module(module)
 
 
-load_search_engine("my_search_engine", my_search_engine)
+load_search_engine("my_search_engine", module)
 ```
 
 ### P.S 2
