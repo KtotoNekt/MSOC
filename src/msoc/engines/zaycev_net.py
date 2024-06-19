@@ -33,14 +33,21 @@ async def get_tracks_download_hashes(session: ClientSession, track_ids: list[str
     for track_meta in json_data["tracks"]:
         track_id = track_meta["id"]
         download_hash = track_meta["download"]
+        streaming_hash = track_meta["streaming"]
 
-        yield track_id, download_hash
+        yield track_id, download_hash, streaming_hash
 
 
 async def get_url(session: ClientSession, download_hash: str) -> str:
     async with session.get(API_URL + "/download/" + download_hash) as response:
         url = await response.text()
         return url
+    
+
+async def get_streaming_url(session: ClientSession, streaming_hash: str) -> str:
+    async with session.get(API_URL + "/play/" + streaming_hash) as response:
+        json_data = await response.json()
+        return json_data["url"]
 
 
 def get_name(li: bs4.Tag) -> str:   
@@ -56,7 +63,9 @@ async def search(query: str):
 
         html = bs4.BeautifulSoup(html_text, "html.parser")
         ul = html.find("ul", attrs={"class", "xm4ofx-1 itNyE"})
-            
+        if not ul:
+            return 
+        
         track_names = dict()
         for li in ul.find_all("li"):
             name = get_name(li)
@@ -64,8 +73,11 @@ async def search(query: str):
 
             track_names[track_id] = name
 
-        async for track_id, download_hash in get_tracks_download_hashes(session, track_names.keys()):
+        async for track_id, download_hash, streaming_hash in get_tracks_download_hashes(session, track_names.keys()):
             name = track_names[str(track_id)]
-            url = await get_url(session, download_hash)
+            if download_hash:
+                url = await get_url(session, download_hash)
+            else:
+                url = await get_streaming_url(session, streaming_hash)
 
             yield Sound(name, url)

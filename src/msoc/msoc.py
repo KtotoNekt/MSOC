@@ -4,7 +4,7 @@ from .functions import create_generator_task
 from .sound import Sound
 from .engines import mp3uk, zaycev_net
 
-from .exceptions import LoadedEngineNotFoundError
+from .exceptions import EngineRaiseError, LoadedEngineNotFoundError
 
 
 __all__ = [
@@ -61,7 +61,9 @@ async def search(query: str):
         for engine in ENGINES.values()
         ]
 
-    for task in tasks:
-        async for sound in task:
-            yield sound
-    
+    try:
+        for task in tasks:
+            async for sound in task:
+                yield sound
+    except Exception as ex:
+        print(ex)
