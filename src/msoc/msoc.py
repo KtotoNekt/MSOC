@@ -4,7 +4,7 @@ from .functions import create_generator_task
 from .sound import Sound
 from .engines import mp3uk, zaycev_net
 
-from .exceptions import EngineRaiseError, LoadedEngineNotFoundError
+from .exceptions import LoadedEngineNotFoundError
 
 
 __all__ = [
