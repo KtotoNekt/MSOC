@@ -5,4 +5,5 @@ venv/
 build/
 dist/
 .pypirc
+dist.sh
 test.py

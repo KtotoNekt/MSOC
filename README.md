@@ -20,6 +20,17 @@ pip install .
 
 # Использование
 
+## В консоле
+
+Можно протестировать пакет обычным скриптом, который был установлен после установки самой библиотеки:
+```shell
+msoc <query or empty>
+# or
+python -m msoc <query or empy>
+```
+
+## В коде
+
 Импортируйте модуль msoc и используйте функцию search() для поиска музыки:
 
 ```python
@@ -29,7 +40,7 @@ import asyncio
 
 async def main():
     query = input("Запрос: ")
-    
+
     async for sound in search(query):
         print(f"Name: {sound.name}, URL: {sound.url}")
 
