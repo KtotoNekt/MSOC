@@ -3,9 +3,9 @@ import asyncio
 
 
 async def main():
-    # query = input("Запрос: ")
-    
-    async for sound in search(1):
+    query = input("Запрос: ")
+
+    async for sound in search(query):
         print(f"Name: {sound.name}, URL: {sound.url}")
 
 

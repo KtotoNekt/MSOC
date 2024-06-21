@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "msoc"
-version = "0.0.4"
+version = "0.0.5"
 authors = [
   { name="Ktoto" },
 ]
@@ -23,3 +23,6 @@ dependencies = [
 
 [project.urls]
 Repository = "https://codeberg.org/Ktoto/MSOC"
+
+[project.scripts]
+msoc = "msoc.__main__:execute"
